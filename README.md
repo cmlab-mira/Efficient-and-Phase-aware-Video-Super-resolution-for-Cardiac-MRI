@@ -18,3 +18,6 @@ python3 src/acdc_preprocess.py ACDC_DIR ACDCSR_DIR
 python3 src/dsb15_dicom2nifty DSB15_DICOM_DIR DSB15_NIFTI_DIR
 python3 src/dsb15_preprocess.py DSB15_NIFTI_DIR DSB15SR_DIR
 ```
+
+# Acknowledgement
+This work was supported in part by the Ministry of Science and Technology, Taiwan, under Grant MOST 109-2634-F-002-032 and Microsoft Research Asia. We are grateful to the NVIDIA grants and the DGX-1 AI Supercomputer and the National Center for High-performance Computing. We thank Dr. Chih-Kuo Lee, National Taiwan University Hospital, for the early discussions.
