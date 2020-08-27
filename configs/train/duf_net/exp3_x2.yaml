@@ -1,0 +1,76 @@
+main:
+    random_seed: 'vsr'
+    saved_dir: './models/acdc_misr/duf_net/exp3_x2/train'
+    
+dataset:
+    name: 'AcdcMISRDataset'
+    kwargs:
+        data_dir: '/home/peter850706/acdc_preprocessed/videos'
+        downscale_factor: 2
+        transforms:
+            - name: 'Normalize'
+              kwargs:
+                  means: [54.089]
+                  stds: [48.084]
+            - name: 'ToTensor'
+        augments:
+            - name: 'RandomHorizontalFlip'
+            - name: 'RandomVerticalFlip'
+            - name: 'RandomCropPatch'
+              kwargs:
+                  size: [32, 32]
+                  ratio: 2
+        num_frames: 7
+
+dataloader:
+    name: 'Dataloader'
+    kwargs:
+        train_batch_size: 12
+        valid_batch_size: 1
+        shuffle: true
+        num_workers: 8
+
+net:
+    name: 'DUFNet'
+    kwargs:
+        in_channels: 1
+        out_channels: 1
+        num_frames: 7
+        size_filter: 5
+        upscale_factor: 2
+        backbone: '_DenseLayer16'
+
+losses:
+    - name: 'HuberLoss'
+      kwargs:
+          delta: 0.01
+      weight: 1.0
+
+metrics:
+    - name: 'PSNR'
+    - name: 'SSIM'
+
+optimizer:
+    name: 'Adam'
+    kwargs:
+        lr: 0.001
+        weight_decay: 0
+
+logger:
+    name: 'AcdcMISRLogger'
+    kwargs:
+        dummy_input: [12, 1, 32, 32]
+
+monitor:
+    name: 'Monitor'
+    kwargs:
+        mode: 'min'
+        target: 'Loss'
+        saved_freq: 10
+        early_stop: 0
+
+trainer:
+    name: 'AcdcMISRTrainer'
+    kwargs:
+        device: 'cuda:0'
+        num_epochs: 1000

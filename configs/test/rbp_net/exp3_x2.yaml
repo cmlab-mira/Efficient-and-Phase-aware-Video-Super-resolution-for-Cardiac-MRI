@@ -1,0 +1,56 @@
+main:
+    saved_dir: './models/acdc_misr/rbp_net/exp3_x2/test'
+    loaded_path: './models/acdc_misr/rbp_net/exp3_x2/train/checkpoints/model_best.pth'
+    
+dataset:
+    name: 'AcdcMISRDataset'
+    kwargs:
+        data_dir: '/home/peter850706/acdc_preprocessed/videos'
+        downscale_factor: 2
+        transforms:
+            - name: 'Normalize'
+              kwargs:
+                  means: [54.089]
+                  stds: [48.084]
+            - name: 'ToTensor'
+        num_frames: 7
+
+dataloader:
+    name: 'Dataloader'
+    kwargs:
+        batch_size: 1
+        shuffle: false
+        num_workers: 8
+
+net:
+    name: 'RBPNet'
+    kwargs:
+        in_channels: 1
+        out_channels: 1
+        base_filter: 256
+        feat: 64
+        num_stages: 3
+        num_resblocks: 5
+        num_frames: 7
+        upscale_factor: 2
+
+losses:
+    - name: 'L1Loss'
+      weight: 1.0
+
+metrics:
+    - name: 'PSNR'
+    - name: 'SSIM'
+    - name: 'CardiacPSNR'
+      kwargs:
+          coordinates_path: '/home/peter850706/acdc_cropped/coordinates.pkl'
+    - name: 'CardiacSSIM'
+      kwargs:
+          coordinates_path: '/home/peter850706/acdc_cropped/coordinates.pkl'
+
+predictor:
+    name: 'AcdcMISRPredictor'
+    kwargs:
+        device: 'cuda:0'
+        saved_dir: './models/acdc_misr/rbp_net/exp3_x2/test'
+        exported: true

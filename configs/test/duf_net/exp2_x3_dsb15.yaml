@@ -1,0 +1,56 @@
+main:    
+    saved_dir: './models/acdc_misr/duf_net/exp2_x3/test_dsb15'
+    loaded_path: './models/acdc_misr/duf_net/exp2_x3/train/checkpoints/model_best.pth'
+    
+dataset:
+    name: 'Dsb15MISRDataset'
+    kwargs:
+        data_dir: '/home/peter850706/dsb15_preprocessed/videos'
+        downscale_factor: 3
+        transforms:
+            - name: 'Normalize'
+              kwargs:
+                  means: [54.089]
+                  stds: [48.084]
+            - name: 'ToTensor'
+        num_frames: 7
+
+dataloader:
+    name: 'Dataloader'
+    kwargs:
+        batch_size: 1
+        shuffle: false
+        num_workers: 6
+
+net:
+    name: 'DUFNet'
+    kwargs:
+        in_channels: 1
+        out_channels: 1
+        num_frames: 7
+        size_filter: 5
+        upscale_factor: 3
+        backbone: '_DenseLayer52'
+
+losses:
+    - name: 'HuberLoss'
+      kwargs:
+          delta: 0.01
+      weight: 1.0
+
+metrics:
+    - name: 'PSNR'
+    - name: 'SSIM'
+    - name: 'CardiacPSNR'
+      kwargs:
+          coordinates_path: '/home/peter850706/dsb15_cropped/coordinates.pkl'
+    - name: 'CardiacSSIM'
+      kwargs:
+          coordinates_path: '/home/peter850706/dsb15_cropped/coordinates.pkl'
+
+predictor:
+    name: 'AcdcMISRPredictor'
+    kwargs:
+        device: 'cuda:0'
+        saved_dir: './models/acdc_misr/duf_net/exp2_x3/test_dsb15'
+        exported: true

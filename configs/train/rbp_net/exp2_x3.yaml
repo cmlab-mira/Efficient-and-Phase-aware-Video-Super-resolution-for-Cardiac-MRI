@@ -1,0 +1,76 @@
+main:
+    random_seed: 'vsr'
+    saved_dir: './models/acdc_misr/rbp_net/exp2_x3/train'
+    
+dataset:
+    name: 'AcdcMISRDataset'
+    kwargs:
+        data_dir: '/home/peter850706/acdc_preprocessed/videos'
+        downscale_factor: 3
+        transforms:
+            - name: 'Normalize'
+              kwargs:
+                  means: [54.089]
+                  stds: [48.084]
+            - name: 'ToTensor'
+        augments:
+            - name: 'RandomHorizontalFlip'
+            - name: 'RandomVerticalFlip'
+            - name: 'RandomCropPatch'
+              kwargs:
+                  size: [32, 32]
+                  ratio: 3
+        num_frames: 7
+
+dataloader:
+    name: 'Dataloader'
+    kwargs:
+        train_batch_size: 16
+        valid_batch_size: 1
+        shuffle: true
+        num_workers: 8
+
+net:
+    name: 'RBPNet'
+    kwargs:
+        in_channels: 1
+        out_channels: 1
+        base_filter: 256
+        feat: 64
+        num_stages: 3
+        num_resblocks: 5
+        num_frames: 7
+        upscale_factor: 3
+
+losses:
+    - name: 'L1Loss'
+      weight: 1.0
+
+metrics:
+    - name: 'PSNR'
+    - name: 'SSIM'
+
+optimizer:
+    name: 'Adam'
+    kwargs:
+        lr: 0.0001
+        weight_decay: 0
+
+logger:
+    name: 'AcdcMISRLogger'
+    kwargs:
+        dummy_input: [16, 1, 32, 32]
+
+monitor:
+    name: 'Monitor'
+    kwargs:
+        mode: 'min'
+        target: 'Loss'
+        saved_freq: 10
+        early_stop: 0
+
+trainer:
+    name: 'AcdcMISRTrainer'
+    kwargs:
+        device: 'cuda:0'
+        num_epochs: 1000

@@ -1,0 +1,59 @@
+main:
+    saved_dir: './models/acdc_vsr/refine_net/exp1_x4/test'
+    loaded_path: './models/acdc_vsr/refine_net/exp1_x4/train/checkpoints/model_best.pth'
+
+dataset:
+    name: 'AcdcVSRRefineNetDataset'
+    kwargs:
+        data_dir: '/home/peter850706/acdc_preprocessed/videos'
+        downscale_factor: 2
+        pos_code_path: '/home/peter850706/acdc_preprocessed/position_code.pkl'
+        transforms:
+            - name: 'Normalize'
+              kwargs:
+                  means: [54.089]
+                  stds: [48.084]
+            - name: 'ToTensor'
+        num_frames: 7
+        num_updated_frames: 6
+
+dataloader:
+    name: 'Dataloader'
+    kwargs:
+        batch_size: 1
+        shuffle: false
+        num_workers: 8
+
+net:
+    name: 'RefineNet'
+    kwargs:
+        in_channels: 1
+        out_channels: 1
+        num_features: [64, 64, 64]
+        upscale_factor: 2
+        num_stages: 3
+        update_memory: true
+        num_updated_frames: 6
+        refine_window_size: 5
+        positional_encoding: true
+
+losses:
+    - name: 'L1Loss'
+      weight: 1.0
+
+metrics:
+    - name: 'PSNR'
+    - name: 'SSIM'
+    - name: 'CardiacPSNR'
+      kwargs:
+          coordinates_path: '/home/peter850706/acdc_cropped/coordinates.pkl'
+    - name: 'CardiacSSIM'
+      kwargs:
+          coordinates_path: '/home/peter850706/acdc_cropped/coordinates.pkl'
+
+predictor:
+    name: 'AcdcVSRRefineNetPredictor'
+    kwargs:
+        device: 'cuda:0'
+        saved_dir: './models/acdc_vsr/refine_net/exp1_x4/test'
+        exported: true

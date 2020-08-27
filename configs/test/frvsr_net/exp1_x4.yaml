@@ -1,0 +1,55 @@
+main:
+    saved_dir: './models/acdc_vsr/frvsr_net/exp1_x4/test'
+    loaded_path: './models/acdc_vsr/frvsr_net/exp1_x4/train/checkpoints/model_best.pth'
+
+dataset:
+    name: 'AcdcVSRDataset'
+    kwargs:
+        data_dir: '/home/peter850706/acdc_preprocessed/videos'
+        downscale_factor: 4
+        transforms:
+            - name: 'Normalize'
+              kwargs:
+                  means: [54.089]
+                  stds: [48.084]
+            - name: 'ToTensor'
+        num_frames: 7
+
+dataloader:
+    name: 'Dataloader'
+    kwargs:
+        batch_size: 1
+        shuffle: false
+        num_workers: 8
+
+net:
+    name: 'FRVSRNet'
+    kwargs:
+        in_channels: 1
+        out_channels: 1
+        upscale_factor: 4
+        num_resblocks: 10
+        is_prediction: True
+
+losses:
+    - name: FlowLoss
+      weight: 1.0
+    - name: MSELoss
+      weight: 1.0
+
+metrics:
+    - name: 'PSNR'
+    - name: 'SSIM'
+    - name: 'CardiacPSNR'
+      kwargs:
+          coordinates_path: '/home/peter850706/acdc_cropped/coordinates.pkl'
+    - name: 'CardiacSSIM'
+      kwargs:
+          coordinates_path: '/home/peter850706/acdc_cropped/coordinates.pkl'
+
+predictor:
+    name: 'AcdcVSRPredictor'
+    kwargs:
+        device: 'cuda:0'
+        saved_dir: './models/acdc_vsr/frvsr_net/exp1_x4/test'
+        exported: true

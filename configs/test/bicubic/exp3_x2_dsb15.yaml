@@ -1,0 +1,47 @@
+main:    
+    saved_dir: './models/acdc_sisr/bicubic/exp3_x2/test_dsb15'
+    
+dataset:
+    name: 'Dsb15SISRDataset'
+    kwargs:
+        data_dir: '/home/peter850706/dsb15_preprocessed/imgs'
+        downscale_factor: 2
+        transforms:
+            - name: 'Normalize'
+              kwargs:
+                  means: [54.089]
+                  stds: [48.084]
+            - name: 'ToTensor'
+
+dataloader:
+    name: 'Dataloader'
+    kwargs:
+        batch_size: 1
+        shuffle: false
+        num_workers: 6
+
+net:
+    name: 'Bicubic'
+    kwargs:
+        upscale_factor: 2
+
+losses:
+    - name: 'L1Loss'
+      weight: 1.0
+
+metrics:
+    - name: 'PSNR'
+    - name: 'SSIM'
+    - name: 'CardiacPSNR'
+      kwargs:
+          coordinates_path: '/home/peter850706/dsb15_cropped/coordinates.pkl'
+    - name: 'CardiacSSIM'
+      kwargs:
+          coordinates_path: '/home/peter850706/dsb15_cropped/coordinates.pkl'
+
+predictor:
+    name: 'AcdcSISRPredictor'
+    kwargs:
+        device: 'cuda:0'
+        saved_dir: './models/acdc_sisr/bicubic/exp3_x2/test_dsb15'
+        exported: true

@@ -1,0 +1,49 @@
+main:
+    saved_dir: 'path/to/experimental/results'
+    loaded_path: 'path/to/checkpoint.pth' # The loaded_path is necessary.
+
+dataset:
+    name: 'MyDataset'
+    kwargs:
+        data_dir: 'path/to/data'
+        transforms: # Could define multiple transforms.
+            - name: 'MyTransform1'
+              kwargs:
+                  kwarg1: value1
+                  kwarg2: value2
+            - name: 'MyTransform2'
+
+dataloader:
+    name: 'Dataloader'
+    kwargs:
+        batch_size: 1
+        shuffle: false
+        num_workers: 8
+
+net:
+    name: 'MyNet'
+    kwargs:
+        kwarg1: value1
+        kwarg2: value2
+
+losses:
+    - name: 'MyLoss'
+      kwargs:
+          kwarg1: value1
+          kwarg2: value2
+      weight: 0.5
+    - name: 'L1Loss'
+      weight: 0.5
+
+metrics:
+    - name: 'MyMetric'
+      kwargs:
+          kwarg1: value1
+          kwarg2: value2
+
+predictor:
+    name: 'MyPredictor'
+    kwargs:
+        device: 'cuda:0'
+        kwarg1: value1
+        kwarg2: value2

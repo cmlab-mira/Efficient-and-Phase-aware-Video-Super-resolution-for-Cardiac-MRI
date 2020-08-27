@@ -105,7 +105,4 @@ venv.bak/
 .mypy_cache/
 
 # Experimental configs and results
-configs/
-!configs/train/example_config.yaml
-!configs/test/example_config.yaml
 models/

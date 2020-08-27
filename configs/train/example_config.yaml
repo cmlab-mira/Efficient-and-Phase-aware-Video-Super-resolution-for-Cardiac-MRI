@@ -1,0 +1,77 @@
+main:
+    random_seed: 0
+    saved_dir: 'path/to/experimental/results'
+    loaded_path: 'path/to/checkpoint.pth' # The loaded_path is not necessary.
+
+dataset:
+    name: 'MyDataset'
+    kwargs:
+        data_dir: 'path/to/data'
+        transforms: # Could define multiple transforms.
+            - name: 'MyTransform1'
+              kwargs:
+                  kwarg1: value1
+                  kwarg2: value2
+            - name: 'MyTransform2'
+
+dataloader:
+    name: 'Dataloader'
+    kwargs:
+        train_batch_size: 32
+        valid_batch_size: 1
+        shuffle: true
+        num_workers: 8
+
+net:
+    name: 'MyNet'
+    kwargs:
+        kwarg1: value1
+        kwarg2: value2
+
+losses:
+    - name: 'MyLoss'
+      kwargs:
+          kwarg1: value1
+          kwarg2: value2
+      weight: 0.5
+    - name: 'L1Loss'
+      weight: 0.5
+
+metrics:
+    - name: 'MyMetric'
+      kwargs:
+          kwarg1: value1
+          kwarg2: value2
+
+optimizer:
+    name: 'Adam'
+    kwargs:
+        lr: 0.001
+        weight_decay: 0
+        amsgrad: false
+
+# The lr_scheduler section is not necessary.
+lr_scheduler:
+    name: 'StepLR'
+    kwargs:
+        step_size: 30
+        gamma: 0.1
+
+logger:
+    name: 'MyLogger'
+    kwargs:
+        dummy_input: [N, C, H, W]
+
+monitor:
+    name: 'Monitor'
+    kwargs:
+        mode: 'min'
+        target: 'Loss'
+        saved_freq: 1
+        early_stop: 0
+
+trainer:
+    name: 'MyTrainer'
+    kwargs:
+        device: 'cuda:0'
+        num_epochs: 10
