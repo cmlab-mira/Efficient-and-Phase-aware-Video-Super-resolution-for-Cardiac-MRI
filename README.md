@@ -1,6 +1,13 @@
 # Efficient-and-Phase-aware-Video-Super-resolution-for-Cardiac-MRI
 Official Pytorch implementation of "[Efficient and Phase-aware Video Super-resolution for Cardiac MRI](https://arxiv.org/abs/2005.10626). Lin et al. MICCAI 2020."
 
+# Environment
+To create the environment, please install `anaconda`/`miniconda` and run the following command
+```
+conda env create -f env.yml
+```
+
+
 # Datasets
 We establish two datasets named **ACDCSR** and **DSB15SR** based on the public MRI datasets.
 
